@@ -1,0 +1,53 @@
+@startuml
+!define RECTANGLE class
+skinparam componentStyle uml2
+
+package "Client Layer" {
+    [Web Browser] as UI
+}
+
+node "Infrastructure (Spring Cloud)" {
+    [API Gateway] as Gateway
+    [Service Discovery (Eureka)] as Discovery
+    [Config Server] as Config
+}
+
+package "Microservices Layer" {
+    
+    node "Auth Service" {
+        [Auth Logic] as AuthLogic
+        database "DB_Auth" as DB_Auth {
+            [Tabelas: USUARIO]
+        }
+    }
+
+    node "Resource Service" {
+        [Resource Logic] as ResourceLogic
+        database "DB_Resource" as DB_Res {
+            [Tabelas: RECURSO, CATEGORIA,\nAUDITORIO, NOTEBOOK]
+        }
+    }
+
+    node "Booking Service" {
+        [Booking Logic] as BookingLogic
+        database "DB_Booking" as DB_Book {
+            [Tabelas: RESERVA]
+        }
+    }
+}
+
+UI --> Gateway
+Gateway ..> Discovery
+AuthLogic -up-> Discovery
+ResourceLogic -up-> Discovery
+BookingLogic -up-> Discovery
+
+Gateway --> AuthLogic : /auth/*
+Gateway --> ResourceLogic : /resources/*
+Gateway --> BookingLogic : /bookings/*
+
+' Comunicação entre serviços
+BookingLogic -[#blue]-> AuthLogic : OpenFeign\n(Valida Usuário)
+BookingLogic -[#blue]-> ResourceLogic : OpenFeign\n(Valida Disponibilidade)
+
+@enduml

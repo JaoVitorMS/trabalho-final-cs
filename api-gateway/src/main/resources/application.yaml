@@ -1,3 +1,53 @@
 spring:
   application:
     name: api-gateway
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+        - id: resource-service
+          uri: lb://resource-service
+          predicates:
+            - Path=/resources/**
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/bookings/**
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: alpha
+    tagsSorter: alpha
+    displayRequestDuration: true
+  api-docs:
+    path: /v3/api-docs
+  gateway:
+    discovery:
+      enabled: true
+    routes:
+      - id: auth-service
+        url: lb://auth-service
+        name: Auth Service
+      - id: resource-service
+        url: lb://resource-service
+        name: Resource Service
+      - id: booking-service
+        url: lb://booking-service
+        name: Booking Service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

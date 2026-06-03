@@ -1,0 +1,142 @@
+@startuml ADR-001-Frontend-Architecture-OpenSARC
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+
+skinparam component {
+  BackgroundColor #EEF2FF
+  BorderColor #4F46E5
+  FontColor #1E1B4B
+  ArrowColor #4F46E5
+}
+
+skinparam package {
+  BackgroundColor #F5F3FF
+  BorderColor #7C3AED
+  FontColor #4C1D95
+  FontStyle bold
+}
+
+skinparam node {
+  BackgroundColor #F0FDF4
+  BorderColor #16A34A
+  FontColor #14532D
+}
+
+skinparam database {
+  BackgroundColor #FEF3C7
+  BorderColor #D97706
+  FontColor #78350F
+}
+
+skinparam cloud {
+  BackgroundColor #EFF6FF
+  BorderColor #2563EB
+  FontColor #1E3A8A
+}
+
+skinparam title {
+  FontSize 18
+  FontColor #1E1B4B
+  FontStyle bold
+}
+
+title ADR-001 — Arquitetura Front-End OpenSARC (Angular)
+
+package "Angular SPA (Browser)" {
+
+  package "Core (Singleton)" {
+    component [AuthGuard\n<size:10>CanActivate por perfil</size>] as AuthGuard
+    component [AuthInterceptor\n<size:10>Injeta Bearer token</size>] as AuthInterceptor
+    component [ErrorInterceptor\n<size:10>401 → refresh | 403 → /login</size>] as ErrorInterceptor
+    component [AuthService\n<size:10>Token em memória</size>] as AuthService
+    component [BookingService] as BookingService
+    component [ResourceService] as ResourceService
+    component [RealtimeService\n<size:10>SSE / EventSource</size>] as RealtimeService
+  }
+
+  package "Shared Components" {
+    component [StatusCardComponent\n<size:10>verde / amarelo / vermelho</size>] as StatusCard
+    component [ResourceCalendarComponent\n<size:10>FullCalendar wrapper</size>] as Calendar
+    component [BookingFormComponent\n<size:10>Reactive Forms + asyncValidator</size>] as BookingForm
+    component [NotifToastComponent] as Toast
+    component [StatusColorPipe] as Pipe
+  }
+
+  package "Feature Modules (Lazy Loaded)" {
+    component [AuthModule\n<size:10>/login · /recover-password</size>] as AuthModule
+    component [DashboardModule\n<size:10>/ — público, sem login</size>] as DashboardModule
+    component [BookingModule\n<size:10>/bookings · /bookings/new · /approve</size>] as BookingModule
+    component [CalendarModule\n<size:10>/calendar</size>] as CalendarModule
+    component [EvaluationModule\n<size:10>/evaluations</size>] as EvaluationModule
+    component [AdminModule\n<size:10>/admin/resources · /admin/users</size>] as AdminModule
+  }
+
+  component [AppRoutingModule\n<size:10>RouterModule + Lazy Loading</size>] as Router
+}
+
+node "Docker Container\nnginx:alpine" as Nginx {
+  component [nginx.conf\n<size:10>SPA fallback + proxy /api/</size>] as NginxConf
+}
+
+cloud "API Gateway\n(porta 8080)" as APIGateway {
+  component [Keycloak\n<size:10>Validação JWT</size>] as Keycloak
+}
+
+package "Microserviços" {
+  component [Booking MS] as BookingMS
+  component [Resource MS] as ResourceMS
+  component [User MS] as UserMS
+  component [Evaluation MS] as EvalMS
+}
+
+database "Cookie HttpOnly\n(Refresh Token)" as Cookie
+
+AuthGuard --> AuthService : hasAnyRole()
+AuthInterceptor --> AuthService : lê access token
+ErrorInterceptor --> AuthService : solicita refresh
+AuthService ..> Cookie : refresh token
+
+Router --> AuthGuard : protege rotas autenticadas
+Router --> AuthModule : lazy
+Router --> DashboardModule : lazy
+Router --> BookingModule : lazy
+Router --> CalendarModule : lazy
+Router --> EvaluationModule : lazy
+Router --> AdminModule : lazy
+
+DashboardModule --> StatusCard : usa
+DashboardModule --> RealtimeService : SSE
+BookingModule --> BookingForm : usa
+BookingModule --> BookingService : valida conflito
+CalendarModule --> Calendar : usa
+CalendarModule --> ResourceService : consulta
+
+StatusCard --> Pipe : formata cor
+StatusCard --> RealtimeService : atualização em tempo real
+
+AuthService --> NginxConf : POST /api/auth/login
+BookingService --> NginxConf : REST /api/v1/bookings
+ResourceService --> NginxConf : REST /api/v1/resources
+RealtimeService --> NginxConf : SSE /api/v1/status/stream
+
+NginxConf --> APIGateway : proxy_pass http://api-gateway:8080
+APIGateway --> Keycloak : valida JWT
+APIGateway --> BookingMS
+APIGateway --> ResourceMS
+APIGateway --> UserMS
+APIGateway --> EvalMS
+
+note top of AuthService
+  Access token em memória
+  (nunca em localStorage — proteção XSS)
+end note
+
+note right of RealtimeService
+  EventSource nativo
+  Requer reconnect/timeout
+  no RealtimeService
+end note
+
+@enduml
