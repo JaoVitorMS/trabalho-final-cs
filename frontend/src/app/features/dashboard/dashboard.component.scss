@@ -1,0 +1,65 @@
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin: 8px 0 20px;
+  font-size: 0.9rem;
+  color: #4b5160;
+}
+
+.summary-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+
+  &.total {
+    background: #94a3b8;
+  }
+  &.livre {
+    background: var(--status-livre);
+  }
+  &.parcial {
+    background: var(--status-parcial);
+  }
+  &.ocupado {
+    background: var(--status-ocupado);
+  }
+}
+
+.updated {
+  margin-left: auto;
+  color: #8a90a0;
+  font-style: italic;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.search {
+  flex: 1 1 280px;
+  max-width: 420px;
+
+  mat-icon[matPrefix] {
+    margin-right: 8px;
+    color: #8a90a0;
+  }
+}
+
+@media (max-width: 600px) {
+  .updated {
+    margin-left: 0;
+    width: 100%;
+  }
+}

@@ -1,0 +1,118 @@
+.auth-wrapper {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 16px;
+  background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 55%, #f0fdf4 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px 26px;
+  border-radius: 16px;
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 18px;
+
+  .brand-icon {
+    font-size: 44px;
+    width: 44px;
+    height: 44px;
+    color: #4f46e5;
+  }
+
+  h1 {
+    margin: 6px 0 0;
+    font-size: 1.6rem;
+    font-weight: 400;
+
+    strong {
+      font-weight: 700;
+    }
+  }
+
+  p {
+    margin: 2px 0 0;
+    color: #6b7180;
+    font-size: 0.85rem;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.submit-btn {
+  height: 44px;
+  margin-top: 4px;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.demo-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.demo-label {
+  display: block;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #8a90a0;
+  margin-bottom: 10px;
+}
+
+.demo-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+
+  button {
+    flex: 1 1 auto;
+    font-size: 0.78rem;
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin: 18px 0 0;
+  font-size: 0.88rem;
+  color: #5b6170;
+
+  a {
+    color: #4f46e5;
+    font-weight: 500;
+    text-decoration: none;
+  }
+}
+
+.auth-note {
+  max-width: 400px;
+  text-align: center;
+  font-size: 0.76rem;
+  color: #8a90a0;
+  margin: 0;
+}

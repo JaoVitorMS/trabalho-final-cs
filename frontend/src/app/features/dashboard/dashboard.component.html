@@ -1,0 +1,92 @@
+<section class="page-container">
+  <header class="page-header">
+    <div>
+      <h1>Painel de Recursos</h1>
+      <p>
+        Status em tempo real dos auditórios e equipamentos — consulta pública,
+        sem necessidade de login.
+      </p>
+    </div>
+    <button mat-stroked-button (click)="carregar()" [disabled]="loading()">
+      <mat-icon>refresh</mat-icon>
+      Atualizar
+    </button>
+  </header>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <!-- Resumo / legenda de status -->
+  <div class="summary">
+    <div class="summary-item">
+      <span class="dot total"></span>
+      {{ contagem().total }} recursos
+    </div>
+    <div class="summary-item">
+      <span class="dot livre"></span>
+      {{ contagem().livres }} livres
+    </div>
+    <div class="summary-item">
+      <span class="dot parcial"></span>
+      {{ contagem().parciais }} reservados em breve
+    </div>
+    <div class="summary-item">
+      <span class="dot ocupado"></span>
+      {{ contagem().ocupados }} ocupados
+    </div>
+    @if (atualizadoEm()) {
+      <span class="updated">
+        Atualizado às {{ atualizadoEm() | date: 'HH:mm:ss' }}
+      </span>
+    }
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters">
+    <mat-form-field appearance="outline" class="search">
+      <mat-label>Buscar recurso</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [ngModel]="termo()"
+        (ngModelChange)="termo.set($event)"
+        placeholder="Nome ou categoria"
+      />
+    </mat-form-field>
+
+    <mat-button-toggle-group
+      [ngModel]="filtroStatus()"
+      (ngModelChange)="filtroStatus.set($event)"
+      aria-label="Filtrar por status"
+    >
+      <mat-button-toggle value="TODOS">Todos</mat-button-toggle>
+      <mat-button-toggle [value]="StatusRecurso.LIVRE">Livres</mat-button-toggle>
+      <mat-button-toggle [value]="StatusRecurso.PARCIAL">
+        Em breve
+      </mat-button-toggle>
+      <mat-button-toggle [value]="StatusRecurso.OCUPADO">
+        Ocupados
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Grid de cards -->
+  @if (filtrados().length > 0) {
+    <div class="grid-cards">
+      @for (vm of filtrados(); track vm.recurso.id) {
+        <app-status-card
+          [recurso]="vm.recurso"
+          [status]="vm.status"
+          [proximaReserva]="vm.proximaReserva"
+        />
+      }
+    </div>
+  } @else if (!loading()) {
+    <app-empty-state
+      icon="search_off"
+      title="Nenhum recurso encontrado"
+      message="Ajuste os filtros ou cadastre novos recursos na área administrativa."
+    />
+  }
+</section>

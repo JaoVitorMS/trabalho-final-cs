@@ -1,0 +1,57 @@
+<section class="page-container">
+  <header class="page-header">
+    <div>
+      <h1>Agenda semanal</h1>
+      <p>
+        {{ rotuloSemana().inicio | date: 'dd MMM' }} —
+        {{ rotuloSemana().fim | date: 'dd MMM yyyy' }}
+      </p>
+    </div>
+    <div class="nav-controls">
+      <button mat-stroked-button (click)="hoje()">Hoje</button>
+      <button mat-icon-button (click)="semanaAnterior()" aria-label="Semana anterior">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-icon-button (click)="proximaSemana()" aria-label="Próxima semana">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button mat-stroked-button (click)="carregar()" [disabled]="loading()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <div class="week-grid">
+    @for (dia of semana(); track dia.data.getTime()) {
+      <div class="day-column" [class.is-today]="dia.hoje">
+        <div class="day-header">
+          <span class="weekday">{{ dia.data | date: 'EEE' }}</span>
+          <span class="daynum">{{ dia.data | date: 'dd' }}</span>
+        </div>
+
+        <div class="day-body">
+          @for (evento of dia.eventos; track evento.id) {
+            <div class="event" [class]="classeStatus(evento.status)">
+              <span class="event-time">
+                {{ evento.inicio | date: 'HH:mm' }}–{{ evento.fim | date: 'HH:mm' }}
+              </span>
+              <span class="event-title">{{ evento.recursoNome }}</span>
+            </div>
+          } @empty {
+            <span class="no-event">—</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="legend">
+    <span><i class="evt-confirmada"></i> Confirmada</span>
+    <span><i class="evt-pendente"></i> Pendente</span>
+    <span><i class="evt-cancelada"></i> Cancelada</span>
+  </div>
+</section>

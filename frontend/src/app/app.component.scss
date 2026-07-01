@@ -1,0 +1,107 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  margin-right: 12px;
+
+  .brand-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .brand-text strong {
+    font-weight: 700;
+  }
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  .nav-label {
+    margin-left: 6px;
+  }
+
+  .nav-active {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.user-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.cta-secondary {
+  margin-right: 4px;
+}
+
+.cta-primary mat-icon {
+  margin-right: 4px;
+}
+
+.menu-header {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  small {
+    color: #6b7180;
+  }
+}
+
+.app-content {
+  display: block;
+  min-height: calc(100vh - 64px);
+}
+
+// Esconde os rótulos da navegação em telas estreitas, mantendo os ícones.
+@media (max-width: 720px) {
+  .app-nav .nav-label,
+  .user-name {
+    display: none;
+  }
+
+  .brand-text {
+    display: none;
+  }
+}

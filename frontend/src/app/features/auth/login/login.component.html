@@ -1,0 +1,96 @@
+<div class="auth-wrapper">
+  <mat-card class="auth-card">
+    <div class="auth-brand">
+      <mat-icon class="brand-icon">event_available</mat-icon>
+      <h1>Open<strong>SARC</strong></h1>
+      <p>Sistema de Alocação de Recursos Acadêmicos</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Usuário / Matrícula</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input
+          matInput
+          formControlName="username"
+          autocomplete="username"
+          placeholder="prof.maria"
+        />
+        @if (form.controls.username.hasError('required')) {
+          <mat-error>Informe o usuário.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Senha</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input
+          matInput
+          formControlName="password"
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="current-password"
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="hidePassword.set(!hidePassword())"
+          [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+        >
+          <mat-icon>
+            {{ hidePassword() ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+        </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>Informe a senha.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (erro()) {
+        <div class="auth-error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ erro() }}</span>
+        </div>
+      }
+
+      <button
+        mat-flat-button
+        type="submit"
+        class="full-width submit-btn"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
+
+    <div class="demo-section">
+      <span class="demo-label">Entrar como (demonstração)</span>
+      <div class="demo-buttons">
+        @for (atalho of atalhos; track atalho.username) {
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="preencher(atalho.username)"
+          >
+            <mat-icon>{{ atalho.icon }}</mat-icon>
+            {{ atalho.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <p class="auth-footer">
+      Não tem conta?
+      <a routerLink="/cadastro">Cadastre-se</a>
+    </p>
+  </mat-card>
+
+  <p class="auth-note">
+    Autenticação de demonstração — o endpoint de login com JWT/Keycloak
+    (ADR-001) ainda não está disponível no backend.
+  </p>
+</div>

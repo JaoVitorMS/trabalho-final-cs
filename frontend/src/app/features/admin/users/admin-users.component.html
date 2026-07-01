@@ -1,0 +1,92 @@
+<section class="page-container">
+  <header class="page-header">
+    <div>
+      <h1>Usuários</h1>
+      <p>Cadastro de docentes e consulta por identificador.</p>
+    </div>
+  </header>
+
+  <div class="admin-grid">
+    <!-- Cadastro -->
+    <mat-card class="form-card">
+      <h2><mat-icon>person_add</mat-icon> Cadastrar usuário</h2>
+      <form [formGroup]="formCadastro" (ngSubmit)="cadastrar()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Usuário</mat-label>
+          <input matInput formControlName="username" />
+          @if (formCadastro.controls.username.hasError('required')) {
+            <mat-error>Informe o usuário.</mat-error>
+          }
+          @if (formCadastro.controls.username.hasError('minlength')) {
+            <mat-error>Mínimo de 3 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput type="password" formControlName="password" />
+          @if (formCadastro.controls.password.hasError('required')) {
+            <mat-error>Informe a senha.</mat-error>
+          }
+          @if (formCadastro.controls.password.hasError('minlength')) {
+            <mat-error>Mínimo de 4 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="salvando()"
+          class="full-width"
+        >
+          <mat-icon>save</mat-icon>
+          Cadastrar
+        </button>
+      </form>
+      <p class="hint">
+        O backend atribui o perfil <strong>PROFESSOR</strong> automaticamente.
+      </p>
+    </mat-card>
+
+    <!-- Consulta -->
+    <mat-card class="form-card">
+      <h2><mat-icon>search</mat-icon> Consultar por id</h2>
+      <form [formGroup]="formBusca" (ngSubmit)="buscar()" class="search-form">
+        <mat-form-field appearance="outline">
+          <mat-label>ID do usuário</mat-label>
+          <input matInput type="number" formControlName="id" />
+          @if (formBusca.controls.id.hasError('required')) {
+            <mat-error>Informe o id.</mat-error>
+          }
+        </mat-form-field>
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="buscando()"
+        >
+          <mat-icon>search</mat-icon>
+          Buscar
+        </button>
+      </form>
+
+      @if (resultadoBusca(); as usuario) {
+        <div class="result-card">
+          <div class="avatar">{{ usuario.username.slice(0, 2) | uppercase }}</div>
+          <div>
+            <strong>{{ usuario.username }}</strong>
+            <small>ID #{{ usuario.id }}</small>
+          </div>
+        </div>
+      }
+
+      <div class="seed-info">
+        <span class="seed-title">Usuários iniciais (seed)</span>
+        <ul>
+          <li>1 — prof.maria</li>
+          <li>2 — prof.joao</li>
+          <li>3 — prof.luisa</li>
+        </ul>
+      </div>
+    </mat-card>
+  </div>
+</section>

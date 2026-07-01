@@ -1,0 +1,100 @@
+<section class="page-container narrow">
+  <header class="page-header">
+    <div>
+      <h1>Nova reserva</h1>
+      <p>Aloque um recurso acadêmico para um intervalo de tempo.</p>
+    </div>
+    <a mat-stroked-button routerLink="/reservas">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar
+    </a>
+  </header>
+
+  <mat-card class="form-card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Recurso</mat-label>
+        <mat-icon matPrefix>meeting_room</mat-icon>
+        <mat-select formControlName="recursoId">
+          @for (recurso of recursos(); track recurso.id) {
+            <mat-option [value]="recurso.id">
+              {{ recurso.nome }}
+              <small class="opt-tipo">· {{ recurso.tipoRecurso }}</small>
+            </mat-option>
+          }
+        </mat-select>
+        @if (carregando()) {
+          <mat-hint>Carregando recursos…</mat-hint>
+        }
+        @if (form.controls.recursoId.hasError('required')) {
+          <mat-error>Selecione um recurso.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="row-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Início</mat-label>
+          <input matInput type="datetime-local" formControlName="dataInicio" />
+          @if (form.controls.dataInicio.hasError('required')) {
+            <mat-error>Informe o início.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Término</mat-label>
+          <input matInput type="datetime-local" formControlName="dataFim" />
+          @if (form.controls.dataFim.hasError('required')) {
+            <mat-error>Informe o término.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      @if (form.hasError('intervaloInvalido')) {
+        <div class="inline-alert warn">
+          <mat-icon>warning</mat-icon>
+          O término deve ser posterior ao início.
+        </div>
+      }
+
+      @if (conflito()) {
+        <div class="inline-alert error">
+          <mat-icon>event_busy</mat-icon>
+          Esse horário conflita com uma reserva já existente para o recurso.
+        </div>
+      }
+
+      <!-- Contexto: reservas existentes do recurso selecionado -->
+      @if (reservasDoRecurso().length > 0) {
+        <div class="existing">
+          <span class="existing-title">
+            <mat-icon>info</mat-icon>
+            Reservas existentes deste recurso
+          </span>
+          <ul>
+            @for (r of reservasDoRecurso(); track r.id) {
+              <li>
+                {{ r.dataInicio | date: 'dd/MM HH:mm' }} —
+                {{ r.dataFim | date: 'dd/MM HH:mm' }}
+                <span class="mini-status">{{ r.status }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <div class="actions">
+        <a mat-button routerLink="/reservas">Cancelar</a>
+        <button mat-flat-button type="submit" [disabled]="salvando()">
+          @if (salvando()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            <ng-container>
+              <mat-icon>check</mat-icon>
+              Confirmar reserva
+            </ng-container>
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</section>

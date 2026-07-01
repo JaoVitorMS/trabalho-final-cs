@@ -1,0 +1,91 @@
+<div class="auth-wrapper">
+  <mat-card class="auth-card">
+    <div class="auth-brand">
+      <mat-icon class="brand-icon">person_add</mat-icon>
+      <h1>Criar conta</h1>
+      <p>Cadastro de docente no OpenSARC</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Usuário</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input matInput formControlName="username" autocomplete="username" />
+        @if (form.controls.username.hasError('required')) {
+          <mat-error>Informe um usuário.</mat-error>
+        }
+        @if (form.controls.username.hasError('minlength')) {
+          <mat-error>Mínimo de 3 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Senha</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input
+          matInput
+          formControlName="password"
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="hidePassword.set(!hidePassword())"
+          [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+        >
+          <mat-icon>
+            {{ hidePassword() ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+        </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>Informe uma senha.</mat-error>
+        }
+        @if (form.controls.password.hasError('minlength')) {
+          <mat-error>Mínimo de 4 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Confirmar senha</mat-label>
+        <mat-icon matPrefix>lock_reset</mat-icon>
+        <input
+          matInput
+          formControlName="confirmacao"
+          [type]="hidePassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+        />
+        @if (
+          form.hasError('senhasDiferentes') &&
+          form.controls.confirmacao.touched
+        ) {
+          <mat-error>As senhas não coincidem.</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        type="submit"
+        class="full-width submit-btn"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Cadastrar
+        }
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Já tem conta?
+      <a routerLink="/login">Entrar</a>
+    </p>
+  </mat-card>
+
+  <p class="auth-note">
+    Envia <code>POST /auth/usuarios/cadastrar</code> — o backend atribui o
+    perfil PROFESSOR.
+  </p>
+</div>

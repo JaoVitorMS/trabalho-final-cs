@@ -1,0 +1,147 @@
+<section class="page-container">
+  <header class="page-header">
+    <div>
+      <h1>Recursos</h1>
+      <p>Cadastro e listagem de auditórios e notebooks.</p>
+    </div>
+    <button mat-stroked-button (click)="carregar()" [disabled]="loading()">
+      <mat-icon>refresh</mat-icon>
+      Atualizar
+    </button>
+  </header>
+
+  <div class="admin-grid">
+    <!-- Formulários de cadastro -->
+    <mat-card class="form-card">
+      <mat-tab-group>
+        <mat-tab label="Auditório">
+          <form
+            [formGroup]="formAuditorio"
+            (ngSubmit)="salvarAuditorio()"
+            class="tab-form"
+          >
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nome</mat-label>
+              <input matInput formControlName="nome" />
+              @if (formAuditorio.controls.nome.hasError('required')) {
+                <mat-error>Informe o nome.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Capacidade</mat-label>
+              <input matInput type="number" formControlName="capacidade" />
+              @if (formAuditorio.controls.capacidade.hasError('required')) {
+                <mat-error>Informe a capacidade.</mat-error>
+              }
+              @if (formAuditorio.controls.capacidade.hasError('min')) {
+                <mat-error>Deve ser maior que zero.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descrição</mat-label>
+              <textarea matInput rows="2" formControlName="descricao"></textarea>
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              type="submit"
+              [disabled]="salvando()"
+              class="full-width"
+            >
+              <mat-icon>add</mat-icon>
+              Cadastrar auditório
+            </button>
+          </form>
+        </mat-tab>
+
+        <mat-tab label="Notebook">
+          <form
+            [formGroup]="formNotebook"
+            (ngSubmit)="salvarNotebook()"
+            class="tab-form"
+          >
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nome</mat-label>
+              <input matInput formControlName="nome" />
+              @if (formNotebook.controls.nome.hasError('required')) {
+                <mat-error>Informe o nome.</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="row-2">
+              <mat-form-field appearance="outline">
+                <mat-label>Marca</mat-label>
+                <input matInput formControlName="marca" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Modelo</mat-label>
+                <input matInput formControlName="modelo" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descrição</mat-label>
+              <textarea matInput rows="2" formControlName="descricao"></textarea>
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              type="submit"
+              [disabled]="salvando()"
+              class="full-width"
+            >
+              <mat-icon>add</mat-icon>
+              Cadastrar notebook
+            </button>
+          </form>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+
+    <!-- Listagem -->
+    <mat-card class="list-card">
+      @if (loading()) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+      @if (recursos().length > 0) {
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="recursos()" class="full-width">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>#</th>
+              <td mat-cell *matCellDef="let r">{{ r.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="nome">
+              <th mat-header-cell *matHeaderCellDef>Nome</th>
+              <td mat-cell *matCellDef="let r">
+                <strong>{{ r.nome }}</strong>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="tipo">
+              <th mat-header-cell *matHeaderCellDef>Tipo</th>
+              <td mat-cell *matCellDef="let r">{{ r.tipoRecurso }}</td>
+            </ng-container>
+            <ng-container matColumnDef="categoria">
+              <th mat-header-cell *matHeaderCellDef>Categoria</th>
+              <td mat-cell *matCellDef="let r">{{ r.categoriaNome ?? '—' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="descricao">
+              <th mat-header-cell *matHeaderCellDef>Descrição</th>
+              <td mat-cell *matCellDef="let r">{{ r.descricao ?? '—' }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+            <tr mat-row *matRowDef="let row; columns: colunas"></tr>
+          </table>
+        </div>
+      } @else if (!loading()) {
+        <app-empty-state
+          icon="meeting_room"
+          title="Nenhum recurso cadastrado"
+          message="Use o formulário ao lado para cadastrar o primeiro recurso."
+        />
+      }
+    </mat-card>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+<mat-card class="status-card" [style.border-left-color]="status | statusColor">
+  <div class="card-top">
+    <div class="resource-icon" [style.background]="(status | statusColor) + '1a'">
+      <mat-icon [style.color]="status | statusColor">{{ iconeRecurso() }}</mat-icon>
+    </div>
+    <span
+      class="status-chip"
+      [style.background]="(status | statusColor) + '1a'"
+      [style.color]="status | statusColor"
+    >
+      <mat-icon class="chip-icon">{{ status | statusColor: 'icon' }}</mat-icon>
+      {{ status | statusColor: 'label' }}
+    </span>
+  </div>
+
+  <h3 class="resource-name">{{ recurso.nome }}</h3>
+  <p class="resource-meta">
+    {{ recurso.categoriaNome ?? recurso.tipoRecurso }}
+  </p>
+
+  @if (recurso.descricao) {
+    <p class="resource-desc">{{ recurso.descricao }}</p>
+  }
+
+  @if (proximaReserva) {
+    <div class="next-booking">
+      <mat-icon class="chip-icon">event_upcoming</mat-icon>
+      <span>Próxima reserva: {{ proximaReserva }}</span>
+    </div>
+  }
+</mat-card>

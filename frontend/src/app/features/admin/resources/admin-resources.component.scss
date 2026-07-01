@@ -1,0 +1,45 @@
+.admin-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-card {
+  border-radius: 14px;
+  padding: 8px;
+}
+
+.tab-form {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 8px 8px;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.list-card {
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  overflow: auto;
+
+  table {
+    width: 100%;
+  }
+
+  th.mat-mdc-header-cell {
+    font-weight: 600;
+  }
+}
