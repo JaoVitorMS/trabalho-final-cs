@@ -2,19 +2,19 @@
   "//": "Proxy de desenvolvimento (ng serve). Encaminha cada prefixo para o microserviço correspondente.",
   "//gateway": "Para rotear via API Gateway, troque os 3 targets abaixo por http://localhost:8080 (ver caveat no README).",
   "/auth": {
-    "target": "http://localhost:8081",
+    "target": "http://localhost:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/resources": {
-    "target": "http://localhost:8082",
+    "target": "http://localhost:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/bookings": {
-    "target": "http://localhost:8083",
+    "target": "http://localhost:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

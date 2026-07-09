@@ -51,8 +51,16 @@ export class AdminUsersComponent {
       return;
     }
     this.salvando.set(true);
+    const { username, password } = this.formCadastro.getRawValue();
+
+    // Backend (auth-service) é sensível à ordem das propriedades no JSON (ADR-001).
+    const payload = {
+      username: username,
+      password: password,
+    };
+
     this.auth
-      .cadastrar(this.formCadastro.getRawValue())
+      .cadastrar(payload)
       .pipe(finalize(() => this.salvando.set(false)))
       .subscribe((usuario) => {
         this.notifier.success(

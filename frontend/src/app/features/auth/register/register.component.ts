@@ -67,7 +67,13 @@ export class RegisterComponent {
     this.loading.set(true);
     const { username, password } = this.form.getRawValue();
 
-    this.auth.cadastrar({ username, password }).subscribe({
+    // Backend (auth-service) é sensível à ordem das propriedades no JSON (ADR-001).
+    const payload = {
+      username: username,
+      password: password,
+    };
+
+    this.auth.cadastrar(payload).subscribe({
       next: (usuario) => {
         this.loading.set(false);
         this.notifier.success(
